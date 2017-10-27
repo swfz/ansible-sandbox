@@ -1,0 +1,11 @@
+---
+- hosts: test
+  become: yes
+  roles:
+    - { role: ruby, tags: ruby }
+    # - { role: notofont, tags: notofont }
+    # - { role: node, tags: node }
+    # - { role: fluentd, tags: fluentd }
+
+
+

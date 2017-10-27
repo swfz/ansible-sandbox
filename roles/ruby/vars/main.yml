@@ -1,0 +1,7 @@
+ruby_version_patch: 2
+ruby_version_minor: 2.4
+ruby_version: "{{ruby_version_minor}}.{{ruby_version_patch}}"
+ruby:
+  dir: ruby-{{ ruby_version }}
+  tgz: ruby-{{ ruby_version }}.tar.gz
+  src: https://cache.ruby-lang.org/pub/ruby/{{ ruby_version_minor }}/ruby-{{ ruby_version }}.tar.gz

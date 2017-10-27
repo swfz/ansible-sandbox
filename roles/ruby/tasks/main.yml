@@ -1,0 +1,54 @@
+- name: dependency package
+  yum: name="{{item}}"
+  with_items:
+    - wget
+    - gcc
+    - gcc-c++
+    - make
+    - openssl-devel
+    - zlib-devel
+    - readline-devel
+    - curl-devel
+    - "@Japanese Support"
+
+- name: exist ruby
+  command: which ruby
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH}}"
+  register: exist_ruby
+  changed_when: false
+  ignore_errors: true
+
+- name: get ruby version
+  shell: ruby -v
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH}}"
+  register: version_in_ruby
+  changed_when: false
+  ignore_errors: true
+  when:
+    exist_ruby.rc == 0
+
+- block:
+  - name: get source
+    get_url:
+      url: "{{ ruby.src }}"
+      dest: /tmp/{{ ruby.tgz }}
+
+  - name: unarchive tar.gz
+    unarchive:
+      src: /tmp/{{ ruby.tgz }}
+      dest: /tmp
+      copy: no
+  - name: configure make install
+    command: chdir=/tmp/{{ ruby.dir }} {{ item }}
+    with_items:
+      - ./configure
+      - make
+      - make install
+
+  when:
+    exist_ruby.rc != 0
+    or ( version_in_ruby is defined and version_in_ruby.stdout.find(ruby_version) == -1 )
+
+
